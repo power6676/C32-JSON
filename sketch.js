@@ -9,9 +9,11 @@ var backgroundImg,platform;
 var bird, slingshot;
 
 var gameState = "onSling";
+var bob = "sprites/bg.png"
+
 
 function preload() {
-    backgroundImg = loadImage("sprites/bg.png");
+    getTimebackground();
 }
 
 function setup(){
@@ -42,10 +44,15 @@ function setup(){
 
     //log6 = new Log(230,180,80, PI/2);
     slingshot = new SlingShot(bird.body,{x:200, y:50});
+
+    //getTime();
 }
 
 function draw(){
-    background(backgroundImg);
+     if (backgroundImg){
+        background(backgroundImg);
+     }
+        
     Engine.update(engine);
     //strokeWeight(4);
     box1.display();
@@ -86,3 +93,47 @@ function keyPressed(){
        // slingshot.attach(bird.body);
     }
 }
+
+
+async function getTimebackground(){
+    var response = await fetch("http://worldtimeapi.org/api/timezone/America/Chicago");
+    //extract the data in json format
+    var responseJSON = await response.json();
+    console.log(responseJSON);
+
+    var dt = responseJSON.datetime;
+    console.log(dt);
+
+    var hour = dt.slice(11,13); //Only selecting 11th, 12th & 13th characters from dt
+    console.log(hour);
+
+        if (hour >= 10 && hour <= 19 ){
+         bob = "sprites/bg.png" //day background
+        }
+        else{
+            bob = "sprites/bg2.jpg"//night background
+        }
+
+        backgroundImg = loadImage(bob);
+        
+}
+
+/*
+API call - Application Program Interface
+-"promise" of information
+-fetch() - sends a request to the API service & also collects the response
+- Asynchronous function - which waits for some lines to be completed before jumping to the next line
+
+
+
+JS executes the statements SYNCHRONOUSLY 
+    - Keeps on executing line after line
+
+JSON 
+ - data structure
+ - JS Object Notation
+ - created inside {}
+ - contains multiple data types
+ - {index_name: index_value, ....}
+ - better readibility
+*/
